@@ -1,20 +1,51 @@
-echo "[?] Jumlah [pesanan] : ";
-$loop = trim(fgets(STDIN));
-for ($x = 0; $x < $loop; $x++) {
-$rand = substr(str_shuffle(str_repeat('0123456789', mt_rand(1,3))), 1, 3);
-$url = "https://www.mcdelivery.co.id/id/getOrder.html";
-$data = "{\"rewardId\":\"2311180$rand\",\"rewardTransactionId\":\"$trxid\"}";
-$headers = array();
-$headers[] = "Host: https://payment.linkaja.id/checkout/payment";
-$headers[] = "Accept: application/json, text/plain, */*";
-$headers[] = "Authorization: Bearer $bearer";
-$headers[] = "User-Agent: Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Mobile Safari/537.36";
-$headers[] = "Content-Type: application/json";
-$headers[] = "Origin: subduedenviousembeds.luqyhanik.repl.co";
-$headers[] = "Referer: https://www.mcdelivery.co.id/m/id/mobile/payment.html";
-$headers[] = "Accept-Encoding: gzip, deflate";
-$headers[] = "Accept-Language: id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7,ms;q=0.6";
-$headers[] = "Cookie: _ga=GA1.3.770946611.1584431943; _gid=GA1.3.168000598.1584431943; TS0100d305=0162c9cb490990834a7708193e20bbd775eae933ce3e50f34503ef106b69d7ceacc5ecf66e5fb6ca7a51870037152284bafaf2991d";
-$headers[] = "Connection: close";
-$exec = request($url, $data, $headers);
-if(strpos($exec, '"data":"Success"') !== false)
+<?php
+/*
+
+
+*/
+include("config.php");
+
+echo "
+
+ _____  _                   _____                    _               
+/  ___|| |                 /  __ \                  | |              
+\ `--. | |__   _   _ __  __| /  \/ _ __  ___   __ _ | |_  ___   _ __ 
+ `--. \| '_ \ | | | |\ \/ /| |    | '__|/ _ \ / _` || __|/ _ \ | '__|
+/\__/ /| |_) || |_| | >  < | \__/\| |  |  __/| (_| || |_| (_) || |   
+\____/ |_.__/  \__,_|/_/\_\ \____/|_|   \___| \__,_| \__|\___/ |_|   
+                                                        Version: V1.0 
+                                                    
+";
+
+// Nama 1
+$first_name = getName();
+$last_name = getName();
+$get_ordernumber = anjinglah("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1");
+$imelna = json_decode($get_imel,true);
+$dptimel = $imelna['0'];
+echo "[ ".date('d-m-Y H:i:s')." ] Phone Number : +62";
+$csrf_value = trim(fgets(STDIN));
+$kirim_otp = sendOTP($csrf_value);
+if(strpos($kirim_otp,'"status":200')){
+echo "[ ".date('d-m-Y H:i:s')." ] Otp Successfully Send To Your Number\n";
+sleep(2);
+echo "[ ".date('d-m-Y H:i:s')." ] Enter trxid : ";
+
+// VALIDATING TRXID //
+$isvalid = validOTP($entered_top,$csrf_value);
+if(strpos($isvalid,'Verification code valid')){
+$registered = register($dptimel,$csrf_value,$entered_top,$first_name,$last_name);
+if(strpos($registered,'Orderan Success')){
+echo "
+==============================
+===============================
+";
+}else{
+echo $registered;die;
+}
+}else{
+	echo "Verification Code invalid ..!! TRY AGAIN BRUH";die;
+}
+}else{
+	echo "Failed Send OTP,RETRY AFTER 30 Seconds";die;
+}
