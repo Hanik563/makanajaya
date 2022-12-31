@@ -1,0 +1,51 @@
+<?php
+/*
+
+
+*/
+include("config.php");
+
+echo "
+
+ _____  _                   _____                    _               
+/  ___|| |                 /  __ \                  | |              
+\ `--. | |__   _   _ __  __| /  \/ _ __  ___   __ _ | |_  ___   _ __ 
+ `--. \| '_ \ | | | |\ \/ /| |    | '__|/ _ \ / _` || __|/ _ \ | '__|
+/\__/ /| |_) || |_| | >  < | \__/\| |  |  __/| (_| || |_| (_) || |   
+\____/ |_.__/  \__,_|/_/\_\ \____/|_|   \___| \__,_| \__|\___/ |_|   
+                                                        Version: V1.0 
+                                                    
+";
+
+// Nama 1
+$first_name = getName();
+$last_name = getName();
+$get_ordernumber = anjinglah("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1");
+$imelna = json_decode($get_imel,true);
+$dptimel = $imelna['0'];
+echo "[ ".date('d-m-Y H:i:s')." ] Phone Number : +62";
+$csrf_value = trim(fgets(STDIN));
+$kirim_otp = sendOTP($csrf_value);
+if(strpos($kirim_otp,'"status":200')){
+echo "[ ".date('d-m-Y H:i:s')." ] Otp Successfully Send To Your Number\n";
+sleep(2);
+echo "[ ".date('d-m-Y H:i:s')." ] Enter trxid : ";
+
+// VALIDATING TRXID //
+$isvalid = validOTP($entered_top,$csrf_value);
+if(strpos($isvalid,'Verification code valid')){
+$registered = register($dptimel,$csrf_value,$entered_top,$first_name,$last_name);
+if(strpos($registered,'Orderan Success')){
+echo "
+==============================
+===============================
+";
+}else{
+echo $registered;die;
+}
+}else{
+	echo "Verification Code invalid ..!! TRY AGAIN BRUH";die;
+}
+}else{
+	echo "Failed Send OTP,RETRY AFTER 30 Seconds";die;
+}
